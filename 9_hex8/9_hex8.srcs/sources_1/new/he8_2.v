@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module hex8(
+module hex8_2(
     input clk,
     input rst_n,
     input [31:0] disp_data,
@@ -13,35 +13,39 @@ module hex8(
 
     // 分频器
     reg clk_1k;
-    reg [14:0] div_cnt;
+    reg [15:0] div_cnt;
 
     always@(posedge clk or negedge rst_n) begin
         if (!rst_n)
             div_cnt <= 0;
-        else if(div_cnt >= 24999)
+        else if(div_cnt >= 49999)
             div_cnt <= 0;
         else
             div_cnt <= div_cnt + 1;
     end
 
+    // 使用使能时钟而不是门控时钟，增加分频器的稳定性
     always@(posedge clk or negedge rst_n) begin
         if (!rst_n)
             clk_1k <= 0;
-        else if (div_cnt == 24999)
-            clk_1k <= ~clk_1k;
+        else if (div_cnt == 49999)
+            clk_1k <= 1;
+        else
+            clk_1k <= 0;
     end
 
 
 
     reg [2:0] num_cnt;
-    always@(posedge clk_1k or negedge rst_n) begin
+    always@(posedge clk or negedge rst_n) begin
         if (!rst_n)
             num_cnt <= 0;
-        else
+        else if (clk_1k)
             num_cnt <= num_cnt + 1;
     end
 
-    always @(*) begin
+    // 使用时序逻辑而非组合逻辑使得时序性能更稳定
+    always @(posedge clk) begin
         case(num_cnt)
             3'b000: sel = 8'b00000001;
             3'b001: sel = 8'b00000010;
@@ -56,7 +60,7 @@ module hex8(
     end
 
     reg [3:0] disp_tmp;
-    always @(*) begin
+    always @(posedge clk) begin
         case(num_cnt)
             3'b000: disp_tmp = disp_data[31:28];
             3'b001: disp_tmp = disp_data[27:24];
@@ -70,7 +74,7 @@ module hex8(
         endcase
     end
 
-    always@(*)
+    always@(posedge clk)
         case(disp_tmp)
             4'h0: seg = 8'b11000000; // 0
             4'h1: seg = 8'b11111001; // 1
