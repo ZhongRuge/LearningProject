@@ -92,5 +92,4 @@ module hex8(
         endcase
 
 
-
 endmodule
