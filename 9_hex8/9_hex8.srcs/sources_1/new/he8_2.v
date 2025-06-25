@@ -61,16 +61,28 @@ module hex8_2(
 
     reg [3:0] disp_tmp;
     always @(posedge clk) begin
-        case(num_cnt)
-            3'b000: disp_tmp = disp_data[31:28];
-            3'b001: disp_tmp = disp_data[27:24];
-            3'b010: disp_tmp = disp_data[23:20];
-            3'b011: disp_tmp = disp_data[19:16];
-            3'b100: disp_tmp = disp_data[15:12];
-            3'b101: disp_tmp = disp_data[11:8];
-            3'b110: disp_tmp = disp_data[7:4];
-            3'b111: disp_tmp = disp_data[3:0];
-            default: disp_tmp = 4'b0000;
+        // 反了
+        // case(num_cnt)
+        //     3'b000: disp_tmp = disp_data[31:28];
+        //     3'b001: disp_tmp = disp_data[27:24];
+        //     3'b010: disp_tmp = disp_data[23:20];
+        //     3'b011: disp_tmp = disp_data[19:16];
+        //     3'b100: disp_tmp = disp_data[15:12];
+        //     3'b101: disp_tmp = disp_data[11:8];
+        //     3'b110: disp_tmp = disp_data[7:4];
+        //     3'b111: disp_tmp = disp_data[3:0];
+        //     default: disp_tmp = 4'b0000;
+        // endcase
+        case (num_cnt)
+            0: disp_tmp = disp_data[3:0];
+            1: disp_tmp = disp_data[7:4];
+            2: disp_tmp = disp_data[11:8];
+            3: disp_tmp = disp_data[15:12];
+            4: disp_tmp = disp_data[19:16];
+            5: disp_tmp = disp_data[23:20];
+            6: disp_tmp = disp_data[27:24];
+            7: disp_tmp = disp_data[31:28];
+            default:  disp_tmp = 4'b0000;
         endcase
     end
 
