@@ -51,6 +51,7 @@ module HC595_drv(
             DS <= 0;
         end
         else begin
+            // 在dclk下降沿进行数据传输，dclk上升沿进行数据读取，避免跳动问题
             case(SHCP_EDGE_CNT)
                 0: begin SH_CP <= 0; ST_CP <= 0; DS <= data_r[15]; end
                 1: SH_CP <= 1;

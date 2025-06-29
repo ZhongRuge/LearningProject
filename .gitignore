@@ -2,3 +2,5 @@
 !.gitignore
 !*/
 !*.v
+!*.xpr
+!*.coe
